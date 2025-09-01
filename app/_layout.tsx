@@ -4,14 +4,17 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [ready, setReady] = useState(false);
 
   const [loaded] = useFonts({
     TajawalRegular: require("../assets/fonts/Tajawal-Regular.ttf"),
@@ -20,16 +23,24 @@ export default function RootLayout() {
     TajawalExtraBold: require("../assets/fonts/Tajawal-ExtraBold.ttf"),
   });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+      setReady(true);
+    }
+  }, [loaded]);
+
+  if (!ready) {
+    return <View style={{ flex: 1, backgroundColor: "#2E86C1" }} />;
   }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
+    {/* <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}> */}
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="splash-screen" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

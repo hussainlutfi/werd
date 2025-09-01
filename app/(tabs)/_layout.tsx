@@ -5,17 +5,17 @@ import { Platform } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useTokens } from "@/hooks/useTokens";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colors = useTokens();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: colors.tabIconSelected,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -29,11 +29,15 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="person"
+        name="profile"
         options={{
           title: "الحساب",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="person" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="person-sharp"
+              size={28}
+              color={focused ? colors.tabIconSelected : colors.tabIconDefault}
+            />
           ),
         }}
       />
@@ -41,17 +45,25 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "الرئيسية",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <IconSymbol
+              size={28}
+              name="house.fill"
+              color={focused ? colors.tabIconSelected : colors.tabIconDefault}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="groups"
         options={{
           title: "المجموعات",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="group" size={28} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome
+              name="group"
+              size={28}
+              color={focused ? colors.tabIconSelected : colors.tabIconDefault}
+            />
           ),
         }}
       />
