@@ -7,6 +7,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { dummyUserSession } from "@/data/user";
 import { Dimensions } from "react-native";
 import { useFont } from "@/hooks/useFont";
+import RewayahCard from "@/components/home/rewayahCard";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,6 +25,8 @@ export default function HomeScreen() {
       <ThemedText type="title" style={[styles.nameText,{ fontFamily }]}>
         {dummyUserSession.name ? ` ${dummyUserSession.name}` : ""}
       </ThemedText>
+      <RewayahCard />
+
 
     </ParallaxScrollView>
   );
