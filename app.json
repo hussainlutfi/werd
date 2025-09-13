@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "werd",
+    "name": "werd  |  وِرد",
     "slug": "werd",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/logo.png",
     "scheme": "werd",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

@@ -9,17 +9,18 @@ import Animated, {
 
 import { ThemedView } from "@/components/ThemedView";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useTokens } from "@/constants/Colors";
 
 const HEADER_HEIGHT = 250;
 
 type Props = PropsWithChildren<{}>;
 
 export default function ParallaxScrollView({ children }: Props) {
-  const colorScheme = useColorScheme() ?? "light";
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
+  const colors = useTokens();
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -42,14 +43,18 @@ export default function ParallaxScrollView({ children }: Props) {
   });
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, {}]}>
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
         contentContainerStyle={{ paddingBottom: bottom }}
       >
-        <ThemedView style={styles.content}>{children}</ThemedView>
+        <ThemedView
+          style={[styles.content, { backgroundColor: colors.background }]}
+        >
+          {children}
+        </ThemedView>
       </Animated.ScrollView>
     </ThemedView>
   );

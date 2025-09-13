@@ -1,8 +1,10 @@
 // hooks/useTokens.ts
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from "@/constants/Colors";
+import { useAppTheme } from "./theme/AppThemeProvider";
 
 export function useTokens() {
-  const scheme = useColorScheme() ?? 'light';
+  const { colorScheme } = useAppTheme();
+
+  const scheme = colorScheme === "dark" ? "dark" : "light";
   return Colors[scheme]; // returns the whole palette
 }
