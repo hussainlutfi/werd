@@ -54,8 +54,10 @@ export default function RootLayout() {
 
   // wrap the whole app once
   return (
-    <AppThemeProvider>
-      <RootStack />
-    </AppThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppThemeProvider>
+        <RootStack />
+      </AppThemeProvider>
+    </GestureHandlerRootView>
   );
 }

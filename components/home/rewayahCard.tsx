@@ -1,56 +1,137 @@
 import { dummyRewayatControl } from "@/data/rewayah";
 import { useFont } from "@/hooks/useFont";
 import { useTokens } from "@/hooks/useTokens";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import Feather from "@expo/vector-icons/Feather";
+import React, { useCallback, useMemo, useRef } from "react";
+import {
+  Alert,
+  Animated,
+  Pressable,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const { width } = require("react-native").Dimensions.get("window");
 
 export default function RewayahCard() {
-  const { fontFamily, boldFontFamily, mediumFontFamily, extraBoldFontFamily } =
-    useFont();
+  const content = useMemo(
+    () => ({
+      rawi: dummyRewayatControl.rewayah.rawi || "",
+      rewayah:
+        dummyRewayatControl.rewayah.rewayah ||
+        "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا",
+      recourse: dummyRewayatControl.rewayah.recourse || "الطلاق - آية 2",
+    }),
+    []
+  );
 
+  const copyedRewayah =
+    content.rawi +
+    "\n\n" +
+    content.rewayah +
+    "\n\n" +
+    "📚" +
+    content.recourse +
+    "\n\n" +
+    "ابني عادتك القرآنية 🌿" +
+    "\n" +
+    "werdq.com";
+
+  const { boldFontFamily, mediumFontFamily } = useFont();
   const colors = useTokens();
 
+  const pressScale = useRef(new Animated.Value(1)).current;
+
+  const onPressIn = () => {
+    Animated.spring(pressScale, {
+      toValue: 0.98,
+      useNativeDriver: true,
+      friction: 8,
+      tension: 80,
+    }).start();
+  };
+
+  const onPressOut = () => {
+    Animated.spring(pressScale, {
+      toValue: 1,
+      useNativeDriver: true,
+      friction: 8,
+      tension: 80,
+    }).start();
+  };
+
+  // Minimal alert for error reporting instead of in-app toast
+  const showError = (message: string) => Alert.alert("خطأ", message);
+
+  const handleShare = useCallback(async () => {
+    try {
+      await Share.share({
+        message: copyedRewayah,
+        title: "مشاركة الرواية",
+      });
+    } catch (e) {
+      showError("تعذّرت المشاركة.");
+    }
+  }, [copyedRewayah]);
+
   return (
-    <View
-      style={[
-        styles.card,
-        {
-          backgroundColor: colors.cardBackground,
-          shadowColor: colors.rewayahCardShadow,
-        },
-      ]}
+    <Pressable
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={{ alignSelf: "stretch" }}
     >
-      <Text
+      <Animated.View
         style={[
-          styles.rawi,
-          { fontFamily: mediumFontFamily, color: colors.text },
+          styles.card,
+          {
+            backgroundColor: colors.cardBackground,
+            shadowColor: colors.rewayahCardShadow,
+            transform: [{ scale: pressScale }],
+          },
         ]}
       >
-        {dummyRewayatControl.rewayah.rawi || ""}
-      </Text>
-      <Text
-        style={[
-          styles.rewayah,
-          { fontFamily: boldFontFamily, color: colors.rewayahText },
-        ]}
-      >
-        {dummyRewayatControl.rewayah.rewayah ||
-          "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا"}
-      </Text>
-      <View style={styles.recourseRow}>
-        <Text style={styles.bookIcon}>📚</Text>
         <Text
           style={[
-            styles.recourse,
+            styles.rawi,
             { fontFamily: mediumFontFamily, color: colors.text },
           ]}
         >
-          {dummyRewayatControl.rewayah.recourse || "الطلاق - آية 2"}
+          {content.rawi}
         </Text>
-      </View>
-    </View>
+
+        <Text
+          style={[
+            styles.rewayah,
+            { fontFamily: boldFontFamily, color: colors.rewayahText },
+          ]}
+        >
+          {content.rewayah}
+        </Text>
+
+        <View style={styles.recourseRow}>
+          <Text style={styles.bookIcon}>📚</Text>
+          <Text
+            style={[
+              styles.recourse,
+              { fontFamily: mediumFontFamily, color: colors.text },
+            ]}
+          >
+            {content.recourse}
+          </Text>
+        </View>
+        <Pressable
+          onPress={handleShare}
+          accessibilityRole="button"
+          accessibilityLabel="مشاركة الرواية"
+          hitSlop={10}
+          style={{ position: "absolute", bottom: 16, left: 16 }}
+        >
+          <Feather name="share" size={18} color={colors.subText} />
+        </Pressable>
+      </Animated.View>
+    </Pressable>
   );
 }
 
@@ -63,10 +144,9 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 16,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    maxWidth: width * 0.9,
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
     alignSelf: "center",
     marginTop: 24,
   },
@@ -91,19 +171,13 @@ const styles = StyleSheet.create({
     gap: 4,
     marginTop: 4,
   },
-  bookIcon: {
-    fontSize: 20,
-  },
+  bookIcon: { fontSize: 20 },
   recourse: {
     color: "#000000",
     fontWeight: "500",
     fontSize: 14,
     textAlign: "center",
   },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 16,
-  },
+
+  // removed modal and related styles
 });

@@ -26,6 +26,10 @@ export const Colors = {
     silver: "#a1a1a1ff",
     bronze: "#CD7F32",
     avatarBackground: "#ecfbf3ff",
+    fadedBackground: "#151718",
+    progressRed: "#fecaca",
+    progressYellow: "#fef3c7",
+    progressGreen: "#dcfce7",
   },
   dark: {
     text: "#ECEDEE",
@@ -45,6 +49,10 @@ export const Colors = {
     silver: "#C0C0C0",
     bronze: "#CD7F32",
     avatarBackground: "#017236ff",
+    fadedBackground: "#f9fafb",
+    progressRed: "#7f1d1d",
+    progressYellow: "#9c8400ff",
+    progressGreen: "#14532d",
   },
 };
 

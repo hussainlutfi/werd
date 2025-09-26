@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 
 import { HelloWave } from "@/components/HelloWave";
-import RewayahCard from "@/components/home/rewayahCard";
+import RewayahCard from "@/components/home/rewayahCard"; 
 import { StrikeCard } from "@/components/home/StrikeCard";
 import TodayWerd from "@/components/home/TodayWerd";
 import UncompletedWerds from "@/components/home/UncompletedWerds";

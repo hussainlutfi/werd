@@ -55,7 +55,15 @@ export default function Accordion({
   });
 
   return (
-    <View style={[styles.wrapper, { backgroundColor: colors.cardBackground }]}>
+    <View
+      style={[
+        styles.wrapper,
+        {
+          backgroundColor: colors.cardBackground,
+          borderColor: colors.cardBorder,
+        },
+      ]}
+    >
       <Pressable
         onPress={onToggle}
         style={{ display: "flex", width: "100%" }}
@@ -87,7 +95,11 @@ export default function Accordion({
             ) : null}
           </View>
           <Animated.View style={{ transform: [{ rotate }] }}>
-            <MaterialIcons name="expand-more" size={28} color={colors.subText} />
+            <MaterialIcons
+              name="expand-more"
+              size={28}
+              color={colors.subText}
+            />
           </Animated.View>
         </View>
       </Pressable>
@@ -107,7 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(234, 179, 8, 0.1)",
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 6,

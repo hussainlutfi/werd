@@ -17,7 +17,7 @@ export default function SplashScreen() {
   }, []);
 
   const checkLoginStatus = () => {
-    router.replace("/(tabs)");
+    router.replace("/onboarding");
   };
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>

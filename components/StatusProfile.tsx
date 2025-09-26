@@ -26,7 +26,14 @@ const StatusProfile: React.FC<StatusProfileProps> = ({
   const iconName = isPointing ? "trending-up" : "trending-down";
 
   return (
-    <View style={{ flexDirection: "row-reverse", gap: 1, width: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        flexDirection: "row-reverse",
+        gap: 1,
+        justifyContent: "center",
+      }}
+    >
       <View
         style={[
           styles.card,
@@ -53,7 +60,13 @@ const StatusProfile: React.FC<StatusProfileProps> = ({
           >
             {getArabicNumber(5)}
           </Text>
-          <Text style={{ fontSize: 16, fontFamily }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: boldFontFamily,
+              color: colors.text,
+            }}
+          >
             <Text style={{ fontSize: 24 }}>🔥</Text>
             يوم
           </Text>
@@ -87,7 +100,15 @@ const StatusProfile: React.FC<StatusProfileProps> = ({
             {getArabicNumber(5)}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <Text style={{ fontSize: 16, fontFamily }}>نقطة</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: boldFontFamily,
+                color: colors.text,
+              }}
+            >
+              نقطة
+            </Text>
             <Feather name={iconName as any} size={24} color={color} />
           </View>
         </View>
@@ -99,6 +120,7 @@ const StatusProfile: React.FC<StatusProfileProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row-reverse",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 16,
@@ -112,7 +134,6 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
     height: 80,
-    width: "45%",
   },
 
   content: {

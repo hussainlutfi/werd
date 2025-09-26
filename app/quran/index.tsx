@@ -8,6 +8,8 @@ import { useFont } from "@/hooks/useFont";
 import { useTokens } from "@/hooks/useTokens";
 import { NewAyah } from "@/types/werd";
 import { Ionicons } from "@expo/vector-icons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getArabicNumber, getInitialWerdStartPoint } from "../../utils/werdApi";
 
 export default function QuranPage() {
@@ -26,7 +28,7 @@ export default function QuranPage() {
   const [open, setOpen] = useState(false);
 
   const user = dummyUserSession;
-  const { hafsFontFamily, fontFamily } = useFont();
+  const { hafsFontFamily, fontFamily, boldFontFamily } = useFont();
   const colors = useTokens();
 
   // Redirect if params are missing
@@ -113,6 +115,9 @@ export default function QuranPage() {
     return data;
   };
 
+  const [showSizeBar, setShowSizeBar] = useState(false);
+  const [fontSize, setFontSize] = useState(20);
+
   // Fetch ayahs on mount
   useEffect(() => {
     const getAyahs = async () => {
@@ -134,6 +139,34 @@ export default function QuranPage() {
   if (!start || !quantity || !type) {
     return null;
   }
+  // Load font size on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const storedFontSize = await AsyncStorage.getItem("fontSize");
+        if (storedFontSize !== null) {
+          setFontSize(Number(storedFontSize));
+        } else {
+          await AsyncStorage.setItem("fontSize", "20");
+          setFontSize(20);
+        }
+      } catch (e) {
+        console.error("Failed to load fontSize:", e);
+        setFontSize(20);
+      }
+    })();
+  }, []);
+
+  // Save font size whenever it changes
+  useEffect(() => {
+    (async () => {
+      try {
+        await AsyncStorage.setItem("fontSize", fontSize.toString());
+      } catch (e) {
+        console.error("Failed to save fontSize:", e);
+      }
+    })();
+  }, [fontSize]);
 
   return (
     <View style={{ flex: 1, paddingTop: 40 }}>
@@ -148,6 +181,9 @@ export default function QuranPage() {
             <Text style={[styles.backText, { color: colors.subText }]}>
               الرئيسية
             </Text>
+          </Pressable>
+          <Pressable onPress={() => setShowSizeBar((prev) => !prev)}>
+            <MaterialIcons name="format-size" size={32} color={colors.tint} />
           </Pressable>
         </View>
         {loadingAyahs && (
@@ -198,9 +234,17 @@ export default function QuranPage() {
               </View>
             )}
 
-            <Text style={[styles.ayahText, { fontFamily: hafsFontFamily }]}>
+            <Text
+              style={[
+                styles.ayahText,
+                { fontFamily: hafsFontFamily, fontSize: fontSize },
+              ]}
+            >
               {section.verses.map((ayah, i) => (
-                <Text key={ayah.number} style={{ color: colors.text }}>
+                <Text
+                  key={ayah.number}
+                  style={{ color: colors.text, textAlign: "justify" }}
+                >
                   {i === 0 && ayah.numberInSurah === 1
                     ? ayah.text.replace(
                         /^\uFEFF?بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/u,
@@ -232,6 +276,40 @@ export default function QuranPage() {
           },
         ]}
       >
+        {showSizeBar && (
+          <View
+            style={{
+              backgroundColor: colors.cardBackground,
+              padding: 12,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flexDirection: "row", gap: 16 }}>
+              <Pressable
+                onPress={() => setFontSize((s) => Math.max(12, s - 4))}
+                style={{ padding: 8 }}
+              >
+                <Ionicons name="remove" size={24} color={colors.tint} />
+              </Pressable>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: boldFontFamily,
+                  color: colors.tint,
+                  alignSelf: "center",
+                }}
+              >
+                {fontSize}
+              </Text>
+              <Pressable
+                onPress={() => setFontSize((s) => Math.min(40, s + 4))}
+                style={{ padding: 8 }}
+              >
+                <Ionicons name="add" size={24} color={colors.tint} />
+              </Pressable>
+            </View>
+          </View>
+        )}
         <Pressable
           onPress={() => {
             if (isCompleted) {
@@ -257,7 +335,6 @@ export default function QuranPage() {
 
 const styles = StyleSheet.create({
   ayahText: {
-    fontSize: 20,
     lineHeight: 50,
     textAlign: "right",
     writingDirection: "rtl",
@@ -266,6 +343,9 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 4,
+    paddingRight: 20,
     paddingVertical: 20,
   },
   backBtn: {

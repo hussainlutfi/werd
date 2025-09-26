@@ -6,10 +6,6 @@ import {
   BottomSheetLeave,
   BottomSheetLeaveRef,
 } from "@/components/BottomSheetLeave";
-import {
-  BottomSheetShare,
-  BottomSheetShareRef,
-} from "@/components/BottomSheetShare";
 import KebabMenuPopover, { KebabMenuItem } from "@/components/KebabMenuPopover";
 import { dummyUserSession } from "@/data/user"; // <- replace useAuth() with this
 import { useFont } from "@/hooks/useFont";
@@ -24,13 +20,15 @@ import {
 } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -273,71 +271,27 @@ export default function GroupDetailScreen() {
   const colors = useTokens();
   const { fontFamily, boldFontFamily } = useFont();
 
+  const showError = (message: string) => Alert.alert("خطأ", message);
+
+  const handleShare = useCallback(async () => {
+    try {
+      await Share.share({
+        message: `https://www.werdq.com/groups/join/${groupId}`,
+        title: "مشاركة الرواية",
+      });
+    } catch (e) {
+      showError("تعذّرت المشاركة.");
+    }
+  }, [groupId]);
+
   // dialogs
   const [addMemberOpen, setAddMemberOpen] = useState(false);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
 
   // data
   const [group, setGroup] = useState<GroupType>(mockGroups[0]);
   const [members, setMembers] = useState<GroupMember[]>(group.members);
   const [loading, setLoading] = useState(false);
-
-  // --- Replace useAuth with dummyUserSession ---
-  const user = dummyUserSession; // { uid: string, ... }
-
-  // Fetch group + member profiles (same flow as your web component)
-  //   useEffect(() => {
-  //     let mounted = true;
-  //     async function fetchGroupAndMembers() {
-  //       try {
-  //         setLoading(true);
-
-  //         // NOTE: adjust the base URL to your API if needed.
-  //         // If you're using local mocks, replace this whole block by reading from your data file.
-  //         const grpRes = await fetch(`/api/groups/${groupId}`);
-  //         if (!grpRes.ok) {
-  //           if (mounted) {
-  //             setGroup(null);
-  //             setMembers([]);
-  //             setLoading(false);
-  //           }
-  //           return;
-  //         }
-  //         const groupData: Group = await grpRes.json();
-  //         if (!mounted) return;
-  //         setGroup(groupData);
-
-  //         if (groupData?.members?.length) {
-  //           const users = await Promise.all(
-  //             groupData.members.map(async (uid) => {
-  //               const uRes = await fetch(`/api/users/${uid}`);
-  //               if (!uRes.ok) return null;
-  //               const u: UserSession = await uRes.json();
-  //               return u;
-  //             })
-  //           );
-  //           if (!mounted) return;
-  //           setMembers(users.filter(Boolean) as UserSession[]);
-  //         } else {
-  //           setMembers([]);
-  //         }
-  //       } catch (e) {
-  //         if (mounted) {
-  //           setGroup(null);
-  //           setMembers([]);
-  //         }
-  //       } finally {
-  //         if (mounted) setLoading(false);
-  //       }
-  //     }
-
-  //     fetchGroupAndMembers();
-  //     return () => {
-  //       mounted = false;
-  //     };
-  //   }, [groupId]);
 
   if (!group) {
     return (
@@ -361,7 +315,6 @@ export default function GroupDetailScreen() {
   const others = sortedMembers.slice(3);
 
   const sheetRef = useRef<BottomSheetAddMemberRef>(null);
-  const shareRef = useRef<BottomSheetShareRef>(null);
   const leaveRef = useRef<BottomSheetLeaveRef>(null);
 
   return (
@@ -438,7 +391,7 @@ export default function GroupDetailScreen() {
                 width: "48%",
               },
             ]}
-            onPress={() => shareRef.current?.expand()}
+            onPress={handleShare}
           >
             <Text
               style={[
@@ -606,7 +559,6 @@ export default function GroupDetailScreen() {
           // e.g. refetch group members list in this screen
         }}
       />
-      <BottomSheetShare ref={shareRef} groupId={groupId} />
       <BottomSheetLeave ref={leaveRef} groupId={groupId} />
     </SafeAreaView>
   );

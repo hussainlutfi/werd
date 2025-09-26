@@ -24,6 +24,7 @@ export const getWerdName = ({
   return `من ${decimalText}الحزب ${num}`;
 };
 
+
 export const getWerdQuantity = ({
   quantity,
   type,

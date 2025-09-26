@@ -139,7 +139,9 @@ export default function UncompletedWerds() {
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: 20 }}>
-        <Text style={styles.heading}>أوراد غير مكتملة</Text>
+        <Text style={[styles.heading, { color: colors.text }]}>
+          أوراد غير مكتملة
+        </Text>
       </View>
 
       {Array.isArray(missedQuarters) && missedQuarters.length > 0 ? (
@@ -164,57 +166,6 @@ export default function UncompletedWerds() {
                   expanded={isExpanded}
                   onToggle={() => handleToggle(werd.quarterNumber)}
                 >
-                  {/* {!details || details.loading ? (
-                    <View style={styles.loadingBox}>
-                      <ActivityIndicator size="small" color="#016630" />
-                    </View>
-                  ) : 
-                  (
-                    <View style={{ rowGap: 16 }}>
-                      <View
-                        style={[
-                          styles.cardsRow,
-                          { flexDirection: width >= 768 ? "row" : "column" },
-                        ]}
-                      >
-                        <View style={{ flex: 1 }}>
-                          <WerdCard
-                            type={details1.type}
-                            ayah={details1.ayah}
-                            surah={details1.surah}
-                            ayahNumber={details1.ayahNumber}
-                            page={details1.page}
-                          />
-                        </View>
-
-                        <View style={{ flex: 1 }}>
-                          <WerdCard
-                            type={details2.type}
-                            ayah={details2.ayah}
-                            surah={details2.surah}
-                            ayahNumber={details2.ayahNumber}
-                            page={details2.page}
-                          />
-                        </View>
-                      </View>
-
-                      <View style={{ alignItems: "center", marginTop: 8 }}>
-                        <Pressable
-                          onPress={() => openReadWerd(werd.quarterNumber)}
-                          style={({ pressed }) => [
-                            styles.ctaButton,
-                            pressed && {
-                              transform: [{ translateY: -2 }],
-                              opacity: 0.95,
-                            },
-                            { width: isMobile ? "100%" : "60%" },
-                          ]}
-                        >
-                          <Text style={styles.ctaText}>اقرأ الورد</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  )} */}
                   <View style={{ rowGap: 16 }}>
                     <View
                       style={[
@@ -222,7 +173,7 @@ export default function UncompletedWerds() {
                         { flexDirection: width >= 768 ? "row" : "column" },
                       ]}
                     >
-                      <View style={{}}>
+                      <View style={{ paddingVertical: 8 }}>
                         <WerdCard
                           type={details1.type}
                           ayah={details1.ayah}

@@ -78,6 +78,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData }) => {
               />
             </View>
           </View>
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              transform: [{ rotate: "180deg" }],
+            }}
+          >
+            <MaterialIcons name="logout" size={24} color={colors.pointsDown} />
+          </View>
         </View>
       </View>
     </View>
